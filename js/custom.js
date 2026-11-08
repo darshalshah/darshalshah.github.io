@@ -84,55 +84,58 @@ jQuery(document).ready(function($) {
 	
 	// cache container
 	var $container = $('#portfolio-wrap');
-	$.browser.safari = ($.browser.webkit && !(/chrome/.test(navigator.userAgent.toLowerCase())));	
-	
-	if($.browser.safari){ 	
-	// initialize isotope
-	$container.isotope({
-		animationEngine : 'jquery',
-		animationOptions: {
-			duration: 200,
-			queue: false
-		},
-		layoutMode: 'fitRows'
-	});
-	} else {	
-	$container.isotope({
-		animationEngine : 'best-available',
-		animationOptions: {
-			duration: 200,
-			queue: false
-		},
-		layoutMode: 'fitRows'
-	});	
-	
-	$(window).resize(function() {
-		$container.isotope('reLayout');
-	});
+	if ($container.length > 0) {
+		var isSafari = ($.browser && $.browser.webkit && !(/chrome/.test(navigator.userAgent.toLowerCase())));	
+		if(isSafari){ 	
+			// initialize isotope
+			$container.isotope({
+				animationEngine : 'jquery',
+				animationOptions: {
+					duration: 200,
+					queue: false
+				},
+				layoutMode: 'fitRows'
+			});
+		} else {	
+			$container.isotope({
+				animationEngine : 'best-available',
+				animationOptions: {
+					duration: 200,
+					queue: false
+				},
+				layoutMode: 'fitRows'
+			});	
+			
+			$(window).resize(function() {
+				$container.isotope('reLayout');
+			});
+		}
+		// filter items when filter link is clicked
+		$('#filters a').click(function(){
+			$('#filters a').removeClass('active');
+			$(this).addClass('active');
+			var selector = $(this).attr('data-filter');
+			$container.isotope({ filter: selector });
+			return false;
+		});
 	}
-	// filter items when filter link is clicked
-	$('#filters a').click(function(){
-		$('#filters a').removeClass('active');
-		$(this).addClass('active');
-		var selector = $(this).attr('data-filter');
-		$container.isotope({ filter: selector });
-		return false;
-	});
 
 	// flexslider main
-	$('#main-flexslider').flexslider({						
-		animation: "swing",
-		direction: "vertical", 
-		slideshow: true,
-		slideshowSpeed: 3500,
-		animationDuration: 1000,
-		directionNav: true,
-		prevText: '<i class="icon-angle-up icon-2x"></i>',       
-		nextText: '<i class="icon-angle-down icon-2x active"></i>', 
-		controlNav: false,
-		smootheHeight:true,						
-		useCSS: false
-	});
+	if ($('#main-flexslider').length > 0) {
+		$('#main-flexslider').flexslider({						
+			animation: "swing",
+			direction: "vertical", 
+			slideshow: true,
+			slideshowSpeed: 3500,
+			animationDuration: 1000,
+			directionNav: true,
+			prevText: '<i class="icon-angle-up icon-2x"></i>',       
+			nextText: '<i class="icon-angle-down icon-2x active"></i>', 
+			controlNav: false,
+			smootheHeight:true,						
+			useCSS: false
+		});
+	}
 });
 	
 	

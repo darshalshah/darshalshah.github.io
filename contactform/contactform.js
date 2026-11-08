@@ -89,19 +89,30 @@ jQuery(document).ready(function($) {
       }
     });
     if (ferror) return false;
-    else var str = $(this).serialize();
+    
+    var name = $("input#name").val() || "";
+    var email = $("input#email").val() || "";
+    var subject = $("input#subject").val() || "";
+    var message = $("textarea[name='message']").val() || "";
     var action = $(this).attr('action');
-    if( ! action ) {
-      action = 'contactform/contactform.php';
+
+    if (!action || action === 'contactform/contactform.php') {
+      var mailtoUrl = 'mailto:darshalshah98@gmail.com?subject=' + encodeURIComponent(subject || 'Message from ' + name) + '&body=' + encodeURIComponent('From: ' + name + ' (' + email + ')\n\n' + message);
+      window.location.href = mailtoUrl;
+      $("#sendmessage").html("Opening your email client to send your message. You can also email me directly at <a href='mailto:darshalshah98@gmail.com' style='color:#fff;font-weight:bold;text-decoration:underline;'>darshalshah98@gmail.com</a>.").addClass("show");
+      $("#errormessage").removeClass("show");
+      $('.contactForm').find("input, textarea").val("");
+      return false;
     }
+
+    var str = $(this).serialize();
     $.ajax({
       type: "POST",
       url: action,
       data: str,
       success: function(msg) {
-        // alert(msg);
         if (msg == 'OK') {
-          $("#sendmessage").addClass("show");
+          $("#sendmessage").html("Your message has been sent. Thank you!").addClass("show");
           $("#errormessage").removeClass("show");
           $('.contactForm').find("input, textarea").val("");
         } else {
@@ -109,7 +120,11 @@ jQuery(document).ready(function($) {
           $("#errormessage").addClass("show");
           $('#errormessage').html(msg);
         }
-
+      },
+      error: function() {
+        $("#sendmessage").removeClass("show");
+        $("#errormessage").addClass("show");
+        $('#errormessage').html("Could not send message via form. Please email directly at <a href='mailto:darshalshah98@gmail.com' style='color:#fff;text-decoration:underline;'>darshalshah98@gmail.com</a>.");
       }
     });
     return false;
